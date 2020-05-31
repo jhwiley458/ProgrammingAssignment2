@@ -1,15 +1,39 @@
-## Put comments here that give an overall description of what your
-## functions do
+## Functions will calculate matrix inverse if it doesn't exist
+## And cache it so it doesn't need to be recalculated 
 
-## Write a short comment describing this function
+## creates matrix with get and set functions
 
-makeCacheMatrix <- function(x = matrix()) {
+## usage j <- makeCacheMatrix(x = matrix(1:4, 2, 2))
 
+makeCacheMatrix <- function(x = matrix()) 
+{
+  i <- NULL
+  set <- function(y) {
+    x <<- y
+    i <<- NULL
+  }
+  get <- function() x
+  setInverse <- function(solve) x <<- solve
+  getInverse <- function() i
+  list(set = set, get = get,
+       setInverse = setInverse,
+       getInverse = getInverse)
 }
 
+## Returns inverse of matrix assuming non-singular 
+## caches if hasn't already been calculated
 
-## Write a short comment describing this function
+## usage cacheSolve(j)
 
-cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+cacheSolve <- function(x, ...) 
+{
+  i <- x$getInverse()
+  if(!is.null(i)) {
+    message("getting cached data")
+    return(i)
+  }
+  data <- x$get()
+  i <- solve(data, ...)
+  x$setInverse(i)
+  i
 }
